@@ -163,6 +163,13 @@ export PATH="$PATH:~/.local/lib/python3.7/site-packages/:~/bin/command/:~/bin/wo
 
 export TEXINPUTS=.:~/lib/texmf//:/usr/share/texlive/texmf-dist//:/etc/texmf//
 
+cde () {
+        EMACS_CWD=`emacsclient -e "(return-current-working-directory-to-shell)" | sed 's/^"\(.*\)"$/\1/'`
+        cd "$EMACS_CWD"
+}
 
-# eval "$(ssh-agent -s)"
-# ssh-add ~/.ssh/id_rsa
+sde (){
+    buf=`pwd`
+    [ -n "$1" ] && buf=`readlink -f $1`
+    emacsclient -e "(find-file \"$buf\")" > /dev/null
+}
