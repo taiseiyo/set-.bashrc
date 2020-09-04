@@ -95,6 +95,7 @@ alias python='/usr/local/bin/python3.7'
 alias cat-bus-time="~/bin/cat-bus-time < ~/tmp/bus-time-table/Sannomiya"
 alias suspend='systemctl suspend'
 export PAGER=less
+export EDITOR=nano
 
 
 # Alias definitions.
@@ -149,8 +150,6 @@ function dict() {
     grep $1 /path/to/unix.txt -A 1 -wi --color | less
 }
 
-
- 
 function p-build(){
     sudo apt install build-essential checkinstall libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev && ./configure -with-ensurepip && sudo make && sudo make altinstall
 }
@@ -159,17 +158,27 @@ if [ $USER = "taisei" ];then
     PS1="\[\e[1;33m\]\u@\h:\w\\$\[\e[m\] "
 fi
 
-export PATH="$PATH:~/.local/lib/python3.7/site-packages/:~/bin/command/:~/bin/work-command/"
-
+export PATH="$PATH:~/.local/lib/python3.7/site-packages/:~/bin/command/:~/bin/work-command/:"
 export TEXINPUTS=.:~/lib/texmf//:/usr/share/texlive/texmf-dist//:/etc/texmf//
+export REDMINE_API_ACCESS_KEY="5984a4916809f0a4cf98c674b959e9b459b6aa59"
 
-cde () {
-        EMACS_CWD=`emacsclient -e "(return-current-working-directory-to-shell)" | sed 's/^"\(.*\)"$/\1/'`
-        cd "$EMACS_CWD"
-}
+# cde () {
+#         EMACS_CWD=`emacsclient -e "(return-current-working-directory-to-shell)" | sed 's/^"\(.*\)"$/\1/'`
+#         cd "$EMACS_CWD"
+# }
 
-sde (){
+ecd (){
     buf=`pwd`
     [ -n "$1" ] && buf=`readlink -f $1`
     emacsclient -e "(find-file \"$buf\")" > /dev/null
 }
+export ALSADEV="plughw:0,0"
+
+if [ -e ~/.ssh ]; then
+    eval "$(ssh-agent -s)" > /dev/null
+    # export SSH_ASKPASS=$(ssh-askpass)
+    export SSH_ASKPASS="2ma9ki21"
+    keychain -q ~/.ssh/fserv_rsa 
+    source ~/.keychain/$HOSTNAME-sh
+    unset SSH_ASKPASS
+fi
