@@ -56,8 +56,9 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ "
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
@@ -76,7 +77,7 @@ esac
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    alias dir='dir --color=auto'
+    #alias dir='dir --color=auto'
     #alias vdir='vdir --color=auto'
 
     #alias grep='grep --color=auto'
@@ -88,15 +89,9 @@ fi
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
 # some more ls aliases
-alias ll='ls -l'
+#alias ll='ls -l'
 alias la='ls -A'
-alias l='ls -CF'
-alias python='/usr/local/bin/python3.7'
-alias cat-bus-time="~/bin/cat-bus-time < ~/tmp/bus-time-table/Sannomiya"
-alias suspend='systemctl suspend'
-export PAGER=less
-export EDITOR=nano
-
+#alias l='ls -CF'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -118,67 +113,34 @@ if ! shopt -oq posix; then
   fi
 fi
 
-kgproxy(){
-    export http_proxy="http://proxy.ksc.kwansei.ac.jp:8080"
-    export https_proxy="http://proxy.ksc.kwansei.ac.jp:8080"
-    export ftp_proxy="http://proxy.ksc.kwansei.ac.jp:8080"
-    cp /etc/apt/aptkg /etc/apt/apt.conf
-}
-
-unkgproxy(){
-    unset http_proxy
-    unset https_proxy
-    unset ftp_proxy
-    cp /etc/apt/aptunkg /etc/apt/apt.conf
-}
-
-cd(){
-    builtin cd "$@" && ls
-}
-
-if test -z "$DISPLAY"; then 
-    setfont /usr/share/consolefonts/Lat7-Terminus32x16.psf.gz
-fi
-
-
-export PYTHONPATH=$HOME/lib/python:/usr/local/lib/python3.7/site-packages:/usr/lib/python3/dist-packages
-
-
-alias LINE='xpywm 2>/tmp/xpywm.log &'
-
-function dict() {
-    grep $1 /path/to/unix.txt -A 1 -wi --color | less
-}
-
-function p-build(){
-    sudo apt install build-essential checkinstall libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev && ./configure -with-ensurepip && sudo make && sudo make altinstall
-}
-
-if [ $USER = "taisei" ];then
-    PS1="\[\e[1;33m\]\u@\h:\w\\$\[\e[m\] "
-fi
-
-export PATH="$PATH:~/.local/lib/python3.7/site-packages/:~/bin/command/:~/bin/work-command/:"
-export TEXINPUTS=.:~/lib/texmf//:/usr/share/texlive/texmf-dist//:/etc/texmf//
-export REDMINE_API_ACCESS_KEY="5984a4916809f0a4cf98c674b959e9b459b6aa59"
-
-# cde () {
-#         EMACS_CWD=`emacsclient -e "(return-current-working-directory-to-shell)" | sed 's/^"\(.*\)"$/\1/'`
-#         cd "$EMACS_CWD"
-# }
-
+export PATH="$PATH:/usr/sbin/:"
 ecd (){
     buf=`pwd`
     [ -n "$1" ] && buf=`readlink -f $1`
     emacsclient -e "(find-file \"$buf\")" > /dev/null
 }
-export ALSADEV="plughw:0,0"
 
-if [ -e ~/.ssh ]; then
-    eval "$(ssh-agent -s)" > /dev/null
-    # export SSH_ASKPASS=$(ssh-askpass)
-    export SSH_ASKPASS="2ma9ki21"
-    keychain -q ~/.ssh/fserv_rsa 
-    source ~/.keychain/$HOSTNAME-sh
-    unset SSH_ASKPASS
-fi
+export PATH="$PATH:~/bin/:"
+
+cd ()
+{
+    builtin cd "$@" && ls
+}
+# . "$HOME/.cargo/env"
+
+alias dual_display='xrandr --output eDP-1 --right-of HDMI-1 --auto'
+
+export TEXINPUTS="$TEXINPUTS:~/lib/texmf/inputs//:/usr/share/texlive/texmf-dist//:/etc/texmf//"
+export BIBINPUTS="$BIBINPUTS:~/lib/texmf/bib//"
+
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+
+# ssh のパスワードを一回うつだけで ok にする
+# if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+#     eval ssh-agent
+#     ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+# fi
+# export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+# ssh-add -l > /dev/null || ssh-add
+
