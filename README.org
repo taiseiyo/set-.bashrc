@@ -1,0 +1,6 @@
+
+** set-.bashrc
+.bashrc 用のファイル
+
+** requirements.txt(おまけ)
+最新の python 用のファイル
