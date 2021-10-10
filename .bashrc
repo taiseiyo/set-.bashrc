@@ -57,11 +57,22 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 
-if [ "$color_prompt" = yes ]; then
-    PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ "
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+# if [ "$color_prompt" = yes ]; then
+#     PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ "
+# else
+#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+# fi
+
+if [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
 fi
+
+if [ -f /etc/bash_completion.d/git-prompt ]; then
+    export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[36m\]$(__git_ps1)\[\e[m\]$ '
+else
+    export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
@@ -115,10 +126,22 @@ fi
 
 export PATH="$PATH:/usr/sbin/:"
 ecd (){
-    buf=`pwd`
-    [ -n "$1" ] && buf=`readlink -f $1`
+    buf=$(pwd)
+    [ -n "$1" ] && buf=$(readlink -f $1)
     emacsclient -e "(find-file \"$buf\")" > /dev/null
 }
+
+cde () {
+    EMACS_CWD=$(emacsclient -e "
+      (expand-file-name
+	(with-current-buffer  
+          (nth 1
+               (assoc 'buffer-list
+                      (nth 1 (nth 1 (current-frame-configuration)))))
+        default-directory))" | sed 's/^"\(.*\)"$/\1/')
+    cd "$EMACS_CWD"
+}
+
 
 export PATH="$PATH:~/bin/:"
 
@@ -143,14 +166,3 @@ alias pbpaste='xsel --clipboard --output'
 # fi
 # export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 # ssh-add -l > /dev/null || ssh-add
-
-
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
-
-if [ -f /etc/bash_completion.d/git-prompt ]; then
-    export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[36m\]$(__git_ps1)\[\e[m\]$ '
-else
-    export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
