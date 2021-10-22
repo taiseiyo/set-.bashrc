@@ -126,10 +126,22 @@ fi
 
 export PATH="$PATH:/usr/sbin/:"
 ecd (){
-    buf=`pwd`
-    [ -n "$1" ] && buf=`readlink -f $1`
+    buf=$(pwd)
+    [ -n "$1" ] && buf=$(readlink -f $1)
     emacsclient -e "(find-file \"$buf\")" > /dev/null
 }
+
+cde () {
+    EMACS_CWD=$(emacsclient -e "
+      (expand-file-name
+	(with-current-buffer  
+          (nth 1
+               (assoc 'buffer-list
+                      (nth 1 (nth 1 (current-frame-configuration)))))
+        default-directory))" | sed 's/^"\(.*\)"$/\1/')
+    cd "$EMACS_CWD"
+}
+
 
 export PATH="$PATH:~/bin/:"
 
@@ -137,7 +149,6 @@ cd ()
 {
     builtin cd "$@" && ls
 }
-# . "$HOME/.cargo/env"
 
 alias dual_display='xrandr --output eDP-1 --right-of HDMI-1 --auto'
 
@@ -149,9 +160,9 @@ alias pbpaste='xsel --clipboard --output'
 
 # ssh のパスワードを一回うつだけで ok にする
 # if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-#     eval ssh-agent
+#     eval $(ssh-agent)
 #     ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
 # fi
+
 # export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
 # ssh-add -l > /dev/null || ssh-add
-
