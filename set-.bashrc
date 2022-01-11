@@ -102,7 +102,7 @@ fi
 # some more ls aliases
 #alias ll='ls -l'
 alias la='ls -A'
-#alias l='ls -CF'
+alias l='ls -CF'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -124,7 +124,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH="$PATH:/usr/sbin/:"
 ecd (){
     buf=$(pwd)
     [ -n "$1" ] && buf=$(readlink -f $1)
@@ -143,7 +142,7 @@ cde () {
 }
 
 
-export PATH="$PATH:~/bin/:"
+export PATH="$PATH:/usr/sbin/:~/bin/:"
 
 cd ()
 {
@@ -157,12 +156,20 @@ export BIBINPUTS="$BIBINPUTS:~/lib/texmf/bib//"
 
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
+alias suspend='sudo systemctl suspend'
+alias xflux='xflux -l 36.1 -g 136.3'
+# https://github.com/xflux-gui/fluxgui → Night Shift mode
 
 # ssh のパスワードを一回うつだけで ok にする
-if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-    eval "$(ssh-agent)"
-    ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-fi
+# if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+#     eval "$(ssh-agent)"
+#     ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+# fi
 
-export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-ssh-add -l > /dev/null || ssh-add
+# export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+# ssh-add -l > /dev/null || ssh-add
+
+erun(){
+    emacs -Q --batch -l $@
+}
+
