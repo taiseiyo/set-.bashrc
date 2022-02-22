@@ -56,23 +56,11 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-
-# if [ "$color_prompt" = yes ]; then
-#     PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$ "
-# else
-#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-# fi
-
-if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-fi
-
-if [ -f /etc/bash_completion.d/git-prompt ]; then
-    export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[36m\]$(__git_ps1)\[\e[m\]$ '
+if [ "$color_prompt" = yes ]; then
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
-
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
@@ -101,7 +89,7 @@ fi
 
 # some more ls aliases
 #alias ll='ls -l'
-alias la='ls -A'
+#alias la='ls -A'
 #alias l='ls -CF'
 
 # Alias definitions.
@@ -124,7 +112,18 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH="$PATH:/usr/sbin/:"
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+export LIBGL_ALWAYS_INDIRECT=1
+export GDK_SCALE=1.25
+
+
+cd(){
+    builtin cd "$@" && ls
+}
+
+alias pbcopy='xsel --clipboard --input'
+alias pbpaste='xsel --clipboard --output'
+
 ecd (){
     buf=$(pwd)
     [ -n "$1" ] && buf=$(readlink -f $1)
@@ -142,27 +141,5 @@ cde () {
     cd "$EMACS_CWD"
 }
 
-
-export PATH="$PATH:~/bin/:"
-
-cd ()
-{
-    builtin cd "$@" && ls
-}
-# . "$HOME/.cargo/env"
-
-alias dual_display='xrandr --output eDP-1 --right-of HDMI-1 --auto'
-
-export TEXINPUTS="$TEXINPUTS:~/lib/texmf/inputs//:/usr/share/texlive/texmf-dist//:/etc/texmf//"
-export BIBINPUTS="$BIBINPUTS:~/lib/texmf/bib//"
-
-alias pbcopy='xsel --clipboard --input'
-alias pbpaste='xsel --clipboard --output'
-
-# ssh のパスワードを一回うつだけで ok にする
-# if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-#     eval ssh-agent
-#     ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-# fi
-# export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-# ssh-add -l > /dev/null || ssh-add
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+source ~/.git-completion.bash

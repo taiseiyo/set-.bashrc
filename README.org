@@ -1,6 +1,15 @@
 
 ** set-.bashrc
-.bashrc 用のファイル
+bash の設定ファイル
 
-** requirements.txt(おまけ)
-最新の python 用のファイル
+** wsl-.bashrc
+wsl 用の bashrc ファイル
+
+*** git completion
+
+#+begin_src bash
+  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+  sudo apt update
+  sudo apt install gh
+#+end_src
