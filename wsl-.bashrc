@@ -149,3 +149,11 @@ if [ -f /etc/bash_completion.d/git-prompt ]; then
 else
     export PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
+
+awesome_wm(){
+    if [ ! -d /run/dbus ] ; then
+	sudo mkdir -p /run/dbus
+	sudo dbus-daemon --system   
+    fi
+    awesome
+}
