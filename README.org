@@ -13,3 +13,18 @@ wsl 用の bashrc ファイル
   sudo apt update
   sudo apt install gh
 #+end_src
+
+*** ble.sh(bash の補完強化)
+
+- [[https://github.com/akinomyoga/ble.sh/blob/master/README-ja_JP.md][URL]]
+  - インストール
+    #+begin_src bash 
+      # インストール & .bashrc 簡単設定
+      git clone --recursive https://github.com/akinomyoga/ble.sh.git
+      make -C ble.sh install PREFIX=~/.local
+      echo 'source ~/.local/share/blesh/ble.sh' >> ~/.bashrc
+      # 更新 (ble.sh をロードした状態で)
+      ble-update
+    #+end_src
+
+    
