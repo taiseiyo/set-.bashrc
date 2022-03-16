@@ -121,6 +121,11 @@ cd(){
     builtin cd "$@" && ls
 }
 
+mkdircd(){
+    mkdir "$@"
+    cd $_
+}
+
 alias pbcopy='xsel --clipboard --input'
 alias pbpaste='xsel --clipboard --output'
 
